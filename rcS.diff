@@ -1,0 +1,18 @@
+diff -Naru etc2.orig/init.d/rcS etc2/init.d/rcS
+--- etc2.orig/init.d/rcS	2020-10-22 08:29:10.729957486 -0400
++++ etc2/init.d/rcS	2020-10-22 08:30:33.246956627 -0400
+@@ -33,6 +33,14 @@
+ 
+ /usr/sbin/telnetd
+ 
++# make root without password work on serial console
++touch /tmp/ah_bringup
++# create hook where additional things could be added to the boot process by creating a file on the persistent jffs volume
++if [ -f /f/startup.sh ]; then
++  chmod a+x /f/startup.sh
++  . /f/startup.sh
++fi
++
+ # Start all init scripts in /etc/init.d
+ # executing them in numerical order.
+ #

@@ -1,0 +1,14 @@
+diff -Naru opt.orig/ah/etc/ah_start opt/ah/etc/ah_start
+--- opt.orig/ah/etc/ah_start	2020-10-25 13:15:15.764997545 -0400
++++ opt/ah/etc/ah_start	2020-10-25 13:19:53.244994656 -0400
+@@ -110,6 +110,10 @@
+ 	 ubimkvol /dev/ubi0 -N f -s $ubifs_size
+ fi
+ mount -t ubifs ubi0:f /f
++if [ -f /f/startup2.sh ]; then
++  chmod a+x /f/startup2.sh
++  . /f/startup2.sh
++fi
+ if [ -d "/f/tmp" ]; then
+ 	rm -rf /f/tmp
+ fi

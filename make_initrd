@@ -1,0 +1,51 @@
+#!/bin/bash
+IMAGE=AP230-10.0r9b
+TFTPSERVER=tftpserver
+BUILDDIR=/home/$(whoami)/aerohack/$IMAGE
+
+if [ -d ${BUILDDIR} ]; then
+  echo "${BUILDDIR} exists: skipping squashfs extraction."
+  echo "Completly remove ${BUILDDIR} to perform extraction."
+else
+  # only start from scratch if BUILDDIR does not exist
+  sudo rm -rf ${IMAGE}.new.initramfs.uImage 2> /dev/null
+  mkdir -p ${BUILDDIR} > /dev/null
+  if [ ! -f ${IMAGE}.initramfs.uImage ]; then
+    # Only download image if source image does ot exist
+    scp root@${TFTPSERVER}:/tftpboot/${IMAGE}.initramfs.uImage.00 \
+                                     ${IMAGE}.initramfs.uImage    
+  fi
+  file *.uImage
+  tail -c+65 < ${IMAGE}.initramfs.uImage > ${BUILDDIR}/${IMAGE}.initramfs.gz
+  cp -v *.diff ${BUILDDIR}/
+  pushd ${BUILDDIR}
+  gunzip ${IMAGE}.initramfs.gz 2> /dev/null
+  if [ ! -f ${IMAGE}.initramfs ]; then
+    mv ${IMAGE}.initramfs.gz ${IMAGE}.initramfs
+  fi
+  sudo unsquashfs ${IMAGE}.initramfs
+  if [ ! -d squashfs-root ]; then
+    echo "Failed to unsqash the initramfs"
+    exit 1
+  fi	
+  cd squashfs-root
+  echo "Applying patches"
+  for P in ../*.diff; do
+    sudo patch -p0 < $P
+  done
+fi
+echo "Now make any additional changes. Exit shell to continue build"
+sudo bash
+cd ${BUILDDIR}
+sudo mksquashfs squashfs-root ${IMAGE}.new.sqfs -comp xz -noappend -always-use-fragments
+mkimage -n "uboot initramfs rootfs" \
+	-A arm \
+	-O linux \
+	-T ramdisk \
+	-d ${IMAGE}.new.sqfs ${IMAGE}.new.initramfs.uImage
+popd
+sudo chmod a+r ${BUILDDIR}/$IMAGE.new.initramfs.uImage
+cp  ${BUILDDIR}/$IMAGE.new.initramfs.uImage .
+sudo rm -rf ${BUILDROOT} 
+file *.uImage
+scp $IMAGE.new.initramfs.uImage root@${TFTPSERVER}:/tftpboot/
