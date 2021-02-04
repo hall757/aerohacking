@@ -1,7 +1,7 @@
 # Aerohacking
 
 - Randy Hall
-- Oct 26, 2021
+- Oct 26, 2020
 
 ## The hardware: HiveAP230
 
