@@ -254,7 +254,7 @@ Dumped from /proc/mtd after root was obtained.  Added to the table is the offset
 
 ### Did you break it?
 
-Thats ok.  I did it myself.  Just keep in mind there are two flash locations in the device that the normal firmware flash cycle with alternate between.  The flash process is smart enough to not flash the same version as one already on the device (even if it is invalid because it was incorrectly updated).  So if you break it or want to recover back to stock, you will need three differnet versions.  Two of any version and a third of the version you want to acutally use.  The uboot commands you need to research are [set_bootparam and image_flash](https://community.extremenetworks.com/accesspoints-233173/could-you-give-me-the-password-on-ap-sn-02301704030524-when-i-stop-autoboot-all-default-passwords-not-work-aerohive-aerovive1-thanks-7827254).
+Thats ok.  I did it myself.  Just keep in mind there are two flash locations in the device that the normal firmware flash cycle with alternate between.  The flash process is smart enough to not flash the same version as one already on the device (even if it is invalid because it was incorrectly updated).  So if you break it or want to recover back to stock, you will need three differnet versions.  Two of any version and a third of the version you want to acutally use.  The uboot commands you need to research are set_bootparam and image_flash.
 
 1. Flash first throwaway version, reboot.
 
@@ -277,6 +277,10 @@ AH-0beef0:/tmp/root# ls -la /proc/config.gz
 
 These are great devices.  If you need to manage a bunch of APs for your business or institution, [check them out](https://www.extremenetworks.com/).  I would never do this to a device I depended on.  I don't even have any ideas of what else I would add or modify on them.  The only real issue I have is I wish there were a way to authenticate to the devices with ssh keys rather than passwords.  With root, that is no longer a problem.  I may sacrifice one of my AP230's to see if I can get OpenWRT running on it, but don't hold your breath.
 
+### More resources
+
+1. Vendor documentation to the **[CLI](https://docs.aerohive.com/330000/docs/help/english/ng/Content/reference/docs/cli-reference-guides.htm?Highlight=CLI)**.  [via archive.org](https://web.archive.org/web/20210419193316/https://docs.aerohive.com/330000/docs/help/english/ng/Content/reference/docs/cli-reference-guides.htm)
+
 ### Before we go
 
-One more bit of aerohive hacking trivia.  There used to be a hard coded password in [VPN Gateway Virtual Appliance](https://www.aerohiveworks.com/VPN-Gateway-Virtual.asp).  You could get around the activation sequence with the code ```A3rO!5#```.  I discovered this late one night many years ago with a copy of the virtual machine image and the [IDA PRO](https://www.hex-rays.com/products/ida/) decompiler.
+One more bit of aerohive hacking trivia.  There used to be a hard coded password in [VPN Gateway Virtual Appliance](https://web.archive.org/web/20210623152336/https://www.aerohiveworks.com/VPN-Gateway-Virtual.asp).  You could get around the activation sequence with the code ```A3rO!5#```.  I discovered this late one night many years ago with a copy of the virtual machine image and the [IDA PRO](https://www.hex-rays.com/products/ida/) decompiler.
