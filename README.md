@@ -1,7 +1,7 @@
 # Aerohacking
 
 - Randy Hall
-- Oct 26, 2020
+- Sep 8, 2023
 
 ## The hardware: HiveAP230
 
@@ -280,6 +280,7 @@ These are great devices.  If you need to manage a bunch of APs for your business
 ### More resources
 
 1. Vendor documentation to the **[CLI](https://docs.aerohive.com/330000/docs/help/english/ng/Content/reference/docs/cli-reference-guides.htm?Highlight=CLI)**.  [via archive.org](https://web.archive.org/web/20210419193316/https://docs.aerohive.com/330000/docs/help/english/ng/Content/reference/docs/cli-reference-guides.htm)
+2. Homeassistant [device tracker](https://www.home-assistant.io/integrations/device_tracker) add-on that can monitor multiple aerohive APs at the same time.  **[github.com/hall757/homeassistant-addons](https://github.com/hall757/homeassistant-addons)**
 
 ### Before we go
 
