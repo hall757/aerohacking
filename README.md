@@ -1,7 +1,7 @@
 # Aerohacking
 
 - Randy Hall
-- Sep 8, 2023
+- Mar 19, 2025
 
 ## The hardware: HiveAP230
 
@@ -9,7 +9,7 @@ The [AP121](https://openwrt.org/toh/aerohive/aerohive_ap121) and [AP330](https:/
 
 ## Upgrading the firmware
 
-[Extreme Networks](https://www.extremenetworks.com/) do not make the firmware images available to the general public.  You need to be a customer with a support contract before you can download them from the support portal.  You can sign up for a [trial of their cloud based management console](https://www.extremenetworks.com/cloud-networking/).  Even with that, you cannot get the images.  You can only connect a device to the cloud and tell the console to upgrade the firmware.  The console tells the AP to do an upgrade and the AP downloads the image directly from a password protected location.  I won't go into all the details, but here is a hint.
+[Extreme Networks](https://www.extremenetworks.com/) do not make the firmware images available to the general public.  You need to be a customer with a support contract before you can download them from the support portal.  You can sign up for a [trial of their cloud based management console](https://www.extremenetworks.com/cloud-networking/).  Even with that, you cannot get the images.  You can only connect a device to the cloud and tell the console to upgrade the firmware.  The console tells the AP to do an upgrade and the AP downloads the image directly from a password protected location.  This still works as of Mar 3, 2025.  I won't go into all the details, but here is a hint.
 
 ```bash
 # Sign up for trial, setup squid to to handle transparent SSL and log all headers.
@@ -20,12 +20,21 @@ curl -h "Authorization: Basic INSERT_YOUR_MAGIC_CREDENTIALS_HERE"  \
  "https://va.extremecloudiq.com:443/afs-webapp/hiveos/images/AP230-10.0r9b.img.S"
 # Don't ask for the password, I will ignore you.
 ```
+To capture the headers, this is what I added to my squid config on pfsense in the advanced Custom Options Before auth.
+```
+strip_query_terms off
+log_mime_hdrs on
+logformat squidmimemod %ts.%03tu %6tr %>a %Ss/%03>Hs %<st %rm %ru %un %Sh/%<A %mt %rp %>st "%{Referer}>h"
+access_log /var/squid/logs/access.log squidmimemod
+logfile_rotate 90
+```
 
 There were three reasons reasons I upgraded the firmware.
 
 1. Simply state that these instructions should work for anything up to  HiveOS 10.0r9b
 2. To have three different versions on hand to recover if and when I broke my device.
-3. Just to see if I could.
+3. To see if after the changes, the AP will still accept a new image when versions are updated.  **spoiler, it works**
+4. Just to see if I could.
 
 ## Digging in
 
@@ -254,7 +263,7 @@ Dumped from /proc/mtd after root was obtained.  Added to the table is the offset
 
 ### Did you break it?
 
-Thats ok.  I did it myself.  Just keep in mind there are two flash locations in the device that the normal firmware flash cycle with alternate between.  The flash process is smart enough to not flash the same version as one already on the device (even if it is invalid because it was incorrectly updated).  So if you break it or want to recover back to stock, you will need three differnet versions.  Two of any version and a third of the version you want to acutally use.  The uboot commands you need to research are set_bootparam and image_flash.
+Thats ok.  I did it myself.  Just keep in mind there are two flash locations in the device that the normal firmware flash cycle will alternate between.  The flash process is smart enough to not flash the same version as one already on the device (even if it is invalid because it was incorrectly updated).  So if you break it or want to recover back to stock, you will need three differnet versions.  Two of any version and a third of the version you want to acutally use.  The uboot commands you need to research are set_bootparam and image_flash.
 
 1. Flash first throwaway version, reboot.
 
@@ -275,12 +284,15 @@ AH-0beef0:/tmp/root# ls -la /proc/config.gz
 
 ### Why?
 
-These are great devices.  If you need to manage a bunch of APs for your business or institution, [check them out](https://www.extremenetworks.com/).  I would never do this to a device I depended on.  I don't even have any ideas of what else I would add or modify on them.  The only real issue I have is I wish there were a way to authenticate to the devices with ssh keys rather than passwords.  With root, that is no longer a problem.  I may sacrifice one of my AP230's to see if I can get OpenWRT running on it, but don't hold your breath.
+These are great devices.  If you need to manage a bunch of APs for your business or institution, [check them out](https://www.extremenetworks.com/).  I would never do this to a device I depended on.  I don't even have any ideas of what else I would add or modify on them.  The only real issue I have is I wish there were a way to authenticate to the devices with ssh keys rather than passwords.  With root, that is no longer a problem.  
+
+I have already sacrificed one of my AP230's to see if I can get OpenWRT running on it.  It ended up with no MAC address so I couldn't to any kind of restore.  I might try another, but don't hold your breath.  It took two years to try it the first time.
 
 ### More resources
 
 1. Vendor documentation to the **[CLI](https://docs.aerohive.com/330000/docs/help/english/ng/Content/reference/docs/cli-reference-guides.htm?Highlight=CLI)**.  [via archive.org](https://web.archive.org/web/20210419193316/https://docs.aerohive.com/330000/docs/help/english/ng/Content/reference/docs/cli-reference-guides.htm)
 2. Homeassistant [device tracker](https://www.home-assistant.io/integrations/device_tracker) add-on that can monitor multiple aerohive APs at the same time.  **[github.com/hall757/homeassistant-addons](https://github.com/hall757/homeassistant-addons)**
+3. Tools and documentation for Aerohive **[AP230](https://github.com/Heisath/aerohive-ap230)**
 
 ### Before we go
 
