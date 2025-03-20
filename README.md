@@ -1,7 +1,7 @@
 # Aerohacking
 
 - Randy Hall
-- Mar 19, 2025
+- Mar 20, 2025
 
 ## The hardware: HiveAP230
 
@@ -9,7 +9,7 @@ The [AP121](https://openwrt.org/toh/aerohive/aerohive_ap121) and [AP330](https:/
 
 ## Upgrading the firmware
 
-[Extreme Networks](https://www.extremenetworks.com/) do not make the firmware images available to the general public.  You need to be a customer with a support contract before you can download them from the support portal.  You can sign up for a [trial of their cloud based management console](https://www.extremenetworks.com/cloud-networking/).  Even with that, you cannot get the images.  You can only connect a device to the cloud and tell the console to upgrade the firmware.  The console tells the AP to do an upgrade and the AP downloads the image directly from a password protected location.  This still works as of Mar 3, 2025.  I won't go into all the details, but here is a hint.
+[Extreme Networks](https://www.extremenetworks.com/) do not make the firmware images available to the general public.  You need to be a customer with a support contract before you can download them from the support portal.  You can sign up for a [trial of their cloud based management console](https://www.extremenetworks.com/cloud-networking/).  Even with that, you cannot get the images.  You can only connect a device to the cloud and tell the console to upgrade the firmware.  The console tells the AP to do an upgrade and the AP downloads the image directly from a password protected location.  This still works as of Mar 20, 2025.  I won't go into all the details, but here is a hint.
 
 ```bash
 # Sign up for trial, setup squid to to handle transparent SSL and log all headers.
@@ -20,7 +20,7 @@ curl -h "Authorization: Basic INSERT_YOUR_MAGIC_CREDENTIALS_HERE"  \
  "https://va.extremecloudiq.com:443/afs-webapp/hiveos/images/AP230-10.0r9b.img.S"
 # Don't ask for the password, I will ignore you.
 ```
-To capture the headers, this is what I added to my squid config on pfsense in the advanced Custom Options Before auth.
+To capture the headers, this is what I added to my squid config on pfsense in the advanced Custom Options Before Auth.
 ```
 strip_query_terms off
 log_mime_hdrs on
@@ -28,10 +28,21 @@ logformat squidmimemod %ts.%03tu %6tr %>a %Ss/%03>Hs %<st %rm %ru %un %Sh/%<A %m
 access_log /var/squid/logs/access.log squidmimemod
 logfile_rotate 90
 ```
-
+I made a script to help with an exaustive search of firmwares > v10.
+[Aerohive Firmware Downloader](https://github.com/hall757/aerohive_firmware_downloader)
+```
+Searching for new versions
+Latest: AP122/AP122-10.6r1a.img.S       13 different images for AP122.
+Latest: AP230/AP230-10.6r1a.img.S       10 different images for AP230.
+Latest: AP250/AP250-10.6r1a.img.S       13 different images for AP250.
+Latest: AP550/AP550-10.5r3.img.S        8 different images for AP550.
+Latest: AP650/AP650-10.7r5.img.S       34 different images for AP650.
+Latest: AP1130/AP1130-10.6r1a.img.S        9 different images for AP1130.
+To search for new firmware, remember to remove the .404 folder.
+```
 There were three reasons reasons I upgraded the firmware.
 
-1. Simply state that these instructions should work for anything up to  HiveOS 10.0r9b
+1. Simply state that these instructions should work for anything up to  HiveOS 10.6r1a
 2. To have three different versions on hand to recover if and when I broke my device.
 3. To see if after the changes, the AP will still accept a new image when versions are updated.  **spoiler, it works**
 4. Just to see if I could.
